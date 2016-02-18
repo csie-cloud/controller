@@ -1,5 +1,5 @@
-class keystone{
-    # Keystone
+class controller_node::keystone{
+  # Keystone
   include ::password
   Exec { logoutput => 'on_failure' }
 
