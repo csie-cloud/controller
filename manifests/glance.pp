@@ -1,10 +1,6 @@
 class controller_node::glance{
   $_database_url = "mysql://glance:${::password::glance_db}@127.0.0.1/glance"
-  
-  notify{ 'tmp':
-    message => "*** password: ${::password::glance} *** "
-  }
-  
+    
   class { 'glance::api':
     verbose             => true,
     keystone_tenant     => 'services',
