@@ -1,9 +1,9 @@
-class controller_node::neutron{
+class controller_node::neutron( String $external_ip ){
 
 
   class { '::neutron':
     enabled         => true,
-    bind_host       => $hostname,
+    bind_host       => '0.0.0.0',
     rabbit_host     => '127.0.0.1',
     rabbit_user     => 'openstack',
     rabbit_password => $::password::rabbit,
@@ -54,7 +54,7 @@ class controller_node::neutron{
     bridge_mappings => ['external:br-ext'],
     enable_tunneling => true,
     tunnel_types => ['vxlan'],
-    local_ip => "${hostname}-int",
+    local_ip => $external_ip,
     l2_population => true,
     arp_responder => true,
     enable_distributed_routing => true  
