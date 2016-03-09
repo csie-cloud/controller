@@ -50,8 +50,10 @@ class controller_node::neutron( String $management_ip ){
   }
 
 
+  # The bridge_uplinks setting will create port and set up ip of the bridge from the interface.
+  # Therefore, it must be run after network_config is run.
   class { '::neutron::agents::ml2::ovs':
-    subscribe => Class['::network_config'],
+    subscribe => Class['::network_config'], 
     bridge_mappings => ['external:br-ext'],
     bridge_uplinks => ['br-ext:eno2'],
     enable_tunneling => true,
@@ -62,6 +64,15 @@ class controller_node::neutron( String $management_ip ){
     enable_distributed_routing => true  
   }
 
+  # eno2.42 port is isolated here to prevent getting run in parallel with eno2 port
+  # since when eno2 port is being configuring, eno2 will be restarted.
+  # When eno2 is down and not get up yet, eno2.42 is down either.
+  # Then the provider of vs_port will not copy ip form eno2.42 to br-int.
+  neutron::plugins::ovs::port{ 'br-int:eno2.42':
+    subscribe => Class['::network_config'],
+    before => Vs_port['eno2'],
+  }
+  
   class { '::neutron::agents::l3':
     use_namespaces => true,
     external_network_bridge => '',
