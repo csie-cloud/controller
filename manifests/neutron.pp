@@ -1,4 +1,4 @@
-class controller_node::neutron( String $external_ip ){
+class controller_node::neutron( String $management_ip ){
 
 
   class { '::neutron':
@@ -51,10 +51,12 @@ class controller_node::neutron( String $external_ip ){
 
 
   class { '::neutron::agents::ml2::ovs':
+    subscribe => Class['::network_config'],
     bridge_mappings => ['external:br-ext'],
+    bridge_uplinks => ['br-ext:eno2'],
     enable_tunneling => true,
     tunnel_types => ['vxlan'],
-    local_ip => $external_ip,
+    local_ip => $management_ip,
     l2_population => true,
     arp_responder => true,
     enable_distributed_routing => true  

@@ -74,7 +74,7 @@ class controller_node::keystone{
     ensure => present,
   }
   
-  keystone_user_role { 'admin::default@demo::default':
+  keystone_user_role { 'demo::default@demo::default':
     ensure => present,
     roles  => ['user']
   }  
