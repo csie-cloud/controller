@@ -46,9 +46,13 @@ class controller_node::neutron( String $management_ip ){
     tenant_network_types => ['vxlan'],
     vxlan_group          => '239.1.1.1',
     mechanism_drivers    => ['openvswitch', 'l2population'],
-    vni_ranges           => '1:1000'
+    vni_ranges           => '1:1000',
+    flat_networks => 'external'
   }
 
+  vs_bridge{ 'br-int':
+    ensure => present
+  }~>
 
   # The bridge_uplinks setting will create port and set up ip of the bridge from the interface.
   # Therefore, it must be run after network_config is run.
